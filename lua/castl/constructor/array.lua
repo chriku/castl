@@ -26,7 +26,7 @@ local pack = table.pack or function(...) return {n = select('#',...),...} end
 
 _ENV = nil
 
-Array = function (this, ...)
+Array = newwrap(function (this, ...)
     local args = pack(...)
     local newArray = {}
 
@@ -40,7 +40,7 @@ Array = function (this, ...)
     end
 
     return coreObjects.array(newArray, newArray.length)
-end
+end)
 
 Array.length = 1
 

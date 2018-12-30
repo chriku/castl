@@ -153,7 +153,6 @@ functionMt.__div = function(a, b)
     return ToNumber(a) / ToNumber(b)
 end
 
-debug.setmetatable((function () end), functionMt)
 
 --[[
     Array metatable
@@ -233,7 +232,6 @@ booleanMt.__div = function(a, b)
     return ToNumber(a) / ToNumber(b)
 end
 
-debug.setmetatable(true, booleanMt)
 
 --[[
     Number metatable
@@ -246,7 +244,6 @@ end
 -- immutable
 numberMt.__newindex = function() end
 
-debug.setmetatable(0, numberMt)
 
 --[[
     String metatable
@@ -286,13 +283,44 @@ stringMt.__div = function(a, b)
     return ToNumber(a) / ToNumber(b)
 end
 
-debug.setmetatable("", stringMt)
+local gmt={}
+local map=setmetatable({},{__mode="k"})
+
+local others={__index=1,__newindex=1,__sub=0,__mul=0,__div=0,__tostring=1}
+for k,tp in pairs(others) do
+  gmt[k]=function(self,...)
+    local item=map[self]
+    if not item then return end
+    local mt
+    if item.ltype=="string" then mt=stringMt[k] end
+    if item.ltype=="number" then mt=numberMt[k] end
+    if item.ltype=="boolean" then mt=booleanMt[k] end
+    if item.ltype=="function" then mt=functionMt[k] end
+    if not mt then else return end
+    if tp==0 then
+      return mt(...)
+    elseif tp==1 then
+      return mt(unwrap(self),...)
+    end
+  end
+end
+
+function newwrap(value)
+  if map[value] then return value end
+  local ret={}
+  map[ret]={type=typeof(type(value)),ltype=type(value),value=value}
+  return setmetatable(ret,gmt)
+end
+function unwrap(value)
+  return (map[value] and map[value].value) or value
+end
+
 
 --[[
     Nil metatable
 --]]
 
-undefinedMt.__index = function(self, key)
+--[[undefinedMt.__index = function(self, key)
     throw(errorHelper.newTypeError("Cannot read property '" .. key .. "' of undefined"))
 end
 
@@ -314,7 +342,7 @@ undefinedMt.__div = function ()
     return 0/0
 end
 
-debug.setmetatable(nil, undefinedMt)
+debug.setmetatable(nil, undefinedMt)]]
 
 --[[
     Support functions

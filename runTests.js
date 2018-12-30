@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+console.log("TEST");
 
 /*
     Copyright (c) 2014, Paul Bernier

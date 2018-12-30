@@ -31,13 +31,13 @@ local getFunctionProxy = internal.getFunctionProxy
 
 _ENV = nil
 
-Object = function (this, obj)
+Object = newwrap(function (this, obj)
     if obj == nil or obj == null then
         return coreObjects.obj({})
     end
 
     return ToObject(obj)
-end
+end)
 
 Object.create = function (this, prototype, props)
     -- get function proxy

@@ -30,7 +30,7 @@ local get, put, withinNew, ToNumber = internal.get, internal.put, internal.withi
 
 _ENV = nil
 
-Number = function(this, arg)
+Number = newwrap(function(this, arg)
     arg = ToNumber(arg)
     -- Number constructor not called within a new
     if not withinNew(this, numberProto) then
@@ -61,7 +61,7 @@ Number = function(this, arg)
     })
 
     return o
-end
+end)
 
 Number.isFinite = function(this, arg)
     if type(arg) == 'number' then

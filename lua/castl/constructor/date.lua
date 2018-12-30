@@ -30,7 +30,7 @@ local get, put, withinNew, ToNumber = internal.get, internal.put, internal.withi
 
 _ENV = nil
 
-Date = function(this, ...)
+Date = newwrap(function(this, ...)
     -- Date constructor not called within a new
     if not withinNew(this, dateProto) then
         return date("%a %h %d %Y %H:%M:%S GMT%z (%Z)")
@@ -88,7 +88,7 @@ Date = function(this, ...)
     })
 
     return o
-end
+end)
 
 Date._timestamp = 0
 

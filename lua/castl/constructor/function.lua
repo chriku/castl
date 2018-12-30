@@ -30,7 +30,7 @@ local require, assert, load, tinsert, concat = require, assert, load, table.inse
 
 _ENV = nil
 
-Function = function(this, ...)
+Function = newwrap(function(this, ...)
     if ... then
         local args = pack(...)
         local body = args[args.n]
@@ -73,8 +73,8 @@ Function = function(this, ...)
         return compiledFunction
     end
 
-    return function () end
-end
+    return newwrap(function () end)
+end)
 
 Function.prototype = functionProto
 functionProto.constructor = Function

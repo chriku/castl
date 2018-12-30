@@ -28,7 +28,7 @@
 }(this, function (exports) {
     "use strict";
 
-    var luaKeywords = ['and', 'break', 'do', 'else', 'elseif', 'end', 'false', 'for', 'function', 'goto', 'if', 'in', 'local', 'nil', 'not', 'or', 'repeat', 'return', 'then', 'true', 'until', 'while'];
+    var luaKeywords = ['and', 'break', 'do', 'else', 'elseif', 'end', 'false', 'for', 'function', 'goto', 'if', 'in', 'local', 'nil', 'not', 'or', 'repeat', 'return', 'then', 'true', 'until', 'while','newwrap'];
 
     var options, annotations;
     var labelTracker = [];
@@ -2393,7 +2393,7 @@
 
     function compileFunction(fun) {
 
-        var compiledFunction = ["(function ("];
+        var compiledFunction = ["(newwrap(function ("];
         var compiledBody = "";
 
         // New context
@@ -2462,7 +2462,7 @@
         // Append body and close function
         compiledFunction.push(compiledBody);
         compiledFunction.push("\n");
-        compiledFunction.push("end)");
+        compiledFunction.push("end))");
 
         return compiledFunction.join('');
     }
@@ -2620,7 +2620,7 @@
         switch (typeof (literal.value)) {
         case "string":
             // @string
-            ret = '"' + sanitizeLiteralString(literal.value) + '"';
+            ret = 'newwrap("' + sanitizeLiteralString(literal.value) + '")';
             if (meta) {
                 meta.type = "string";
             }
@@ -2628,12 +2628,13 @@
         case "number":
             // JSON.stringify write numbers in base 10
             // (Lua doesn't handle octal notation)
-            ret = JSON.stringify(literal.value);
+            ret = 'newwrap('+JSON.stringify(literal.value)+')';
             if (meta) {
                 meta.type = "number";
             }
             break;
         case "boolean":
+            ret='newwrap('+literal.value+')';
             if (meta) {
                 meta.type = "boolean";
             }

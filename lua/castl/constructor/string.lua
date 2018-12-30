@@ -31,7 +31,7 @@ local ToString, withinNew, get, put, ToNumber, ToUint16 = internal.ToString, int
 
 _ENV = nil
 
-String = function(this, ...)
+String = newwrap(function(this, ...)
     local arg = pack(...).n > 0 and ToString(...) or "";
 
     -- String constructor not called within a new
@@ -67,7 +67,7 @@ String = function(this, ...)
     })
 
     return o
-end
+end)
 
 local toUTF8Array = function (charcode)
     local utf8 = {}

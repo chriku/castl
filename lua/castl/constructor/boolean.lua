@@ -38,7 +38,7 @@ local booleanPrimitive = function(var)
     end
 end
 
-Boolean = function(this, arg)
+Boolean = newwrap(function(this, arg)
     -- Boolean constructor not called within a new
     if not withinNew(this, booleanProto) then
         return booleanPrimitive(arg)
@@ -68,7 +68,7 @@ Boolean = function(this, arg)
     })
 
     return o
-end
+end)
 
 Boolean.prototype = booleanProto
 booleanProto.constructor = Boolean
